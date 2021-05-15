@@ -9,7 +9,7 @@ let sliders = [];
  
 
 // Api Key 
-const KEY = '20269065-fab9f00210b734c20fc966aa8&&q';
+const KEY = "15674931-a9d714b6e9d654524df198e00&q";
 
 // show images 
 const showImages = images => {
@@ -18,19 +18,20 @@ const showImages = images => {
   gallery.innerHTML = '';
   // show gallery title
   galleryHeader.style.display = 'flex';
-  Object.values(images).forEach(image => {
+    images.forEach(image => {
    const  div = document.createElement('div');
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
-    div.innerHTML = `  <img  src='${image.userImageURL}'  onclick=selectItem(event,'${image.previewURL}')  class='img-fluid img-thumbnail' alt='${image.tags}'>`;
-    gallery.appendChild(div)
-  })
+    div.innerHTML = `  <img  src="${image.webformatURL}"  onclick=selectItem(event,"${image.webformatURL}")  class='img-fluid img-thumbnail' alt="${image.tags}" >`;
+    gallery.appendChild(div);
+  });
+  //End spinner 
    fileLoading()
 }
 
 const getImages = (query) => {
    fileLoading()
-  fetch(`https://pixabay.com/api/?key=${KEY}=${query}&category&lang&image_type=photo&pretty=true`)
-    
+   console.log(query);
+  fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
     .then(data => showImages(data.hits))
     .catch(err => displayError('something is wrong! plese try again latter!!'))
@@ -41,23 +42,25 @@ const selectItem = (event, img) => {
   let element = event.target;
   
   element.classList.toggle('added');
+
   let item = sliders.indexOf(img);
   if (item === -1) {
     sliders.push(img);
+   }else {
+           sliders.splice(item, 1);
    }
 }
 var timer
 const createSlider = () => {
   // check slider image length
-  if (sliders.length < 1) {
+  if (sliders.length < 2) {
     alert('Select at least 2 image.')
     return;
   }
- 
 
   
   // crate slider previous next area
-  sliderContainer.innerHTML = '';
+  sliderContainer.innerHTML = "";
   const prevNext = document.createElement('div');
   prevNext.className = "prev-next d-flex w-100 justify-content-between align-items-center";
   prevNext.innerHTML = ` 
@@ -66,16 +69,14 @@ const createSlider = () => {
   `;
 
   sliderContainer.appendChild(prevNext)
- 
   document.querySelector('.main').style.display = 'block';
   // hide image aria
-  imagesArea.style.display = 'none';
+  imagesArea.style.display = "none";
   const duration = document.getElementById('doration').value*1000 || 1000;
-   if(duration < 0){
+   if(duration < 1){
      alert('Negetive time is not except')
    }
-   else{
-     
+   else{ 
     console.log(duration);
     sliders.forEach(slide => {
       let item = document.createElement('div')
@@ -100,13 +101,11 @@ const changeItem = index => {
 
 // change slide item
 const changeSlide = (index) => {
-
   const items = document.querySelectorAll('.slider-item');
   if (index < 0) {
     slideIndex = items.length - 1
     index = slideIndex;
   };
-
   if (index >= items.length) {
     index = 0;
     slideIndex = 0;
@@ -148,5 +147,5 @@ sliderBtn.addEventListener('click', function () {
     // sppiner section 
     const fileLoading = () => {
     const spin =  document.getElementById('spinner');
-      spin.classList.toggle('spi')
+      spin.classList.toggle("spi");
     }
